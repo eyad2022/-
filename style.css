@@ -1,9 +1,5 @@
 /* ============================================================
-   Marginalia Bookstore — supplementary styles
-   Tailwind (via CDN) handles most utility styling in index.html.
-   This file covers things Tailwind utility classes can't express
-   cleanly: the cart/checkout slide-in panels, product cards,
-   skeleton loaders, and small bits of motion.
+   ملف التنسيقات الإضافية (CSS)
    ============================================================ */
 
 :root {
@@ -17,7 +13,7 @@
   --gold-300: #DBB559;
   --linen-100: #FCFAF5;
   --linen-200: #F0EAD9;
-  --shadow-panel: -12px 0 32px rgba(8, 15, 31, 0.14);
+  --shadow-panel: 12px 0 32px rgba(8, 15, 31, 0.14); /* تم تعديل الظل ليتناسب مع اليسار */
 }
 
 * {
@@ -33,7 +29,7 @@ body {
 }
 
 /* ---------------------------------------------------------- */
-/* Nav links                                                   */
+/* تأثيرات الروابط (Nav links)                                */
 /* ---------------------------------------------------------- */
 .nav-link {
   color: var(--navy-800);
@@ -48,10 +44,10 @@ body {
 .nav-link::after {
   content: "";
   position: absolute;
-  left: 0;
+  right: 0;
   bottom: -3px;
   width: 0;
-  height: 1.5px;
+  height: 2px;
   background: var(--gold-500);
   transition: width 0.2s ease;
 }
@@ -59,15 +55,8 @@ body {
   width: 100%;
 }
 
-.nav-link-mobile {
-  padding: 0.6rem 0.25rem;
-  border-bottom: 1px solid var(--navy-50);
-  color: var(--navy-800);
-}
-
 /* ---------------------------------------------------------- */
-/* Hero background pattern — faint horizontal rules,           */
-/* evoking ruled book pages rather than a generic gradient.    */
+/* خلفية قسم البطل (Hero background pattern)                  */
 /* ---------------------------------------------------------- */
 .hero-rule-pattern {
   background-image: repeating-linear-gradient(
@@ -79,14 +68,14 @@ body {
 }
 
 /* ---------------------------------------------------------- */
-/* Product cards                                                */
+/* بطاقات المنتجات (Product cards)                            */
 /* ---------------------------------------------------------- */
 .book-card {
   display: flex;
   flex-direction: column;
   background: var(--linen-100);
   border: 1px solid var(--navy-50);
-  border-radius: 2px;
+  border-radius: 4px;
   overflow: hidden;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
@@ -107,77 +96,14 @@ body {
   display: block;
 }
 
-.book-card-body {
-  padding: 0.9rem 1rem 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  flex: 1;
-}
-
-.book-title {
-  font-family: "Fraunces", ui-serif, serif;
-  font-size: 1rem;
-  line-height: 1.3;
-  color: var(--navy-700);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.book-author {
-  font-size: 0.82rem;
-  color: rgba(12, 24, 48, 0.55);
-}
-
-.book-card-footer {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 0.65rem;
-}
-
-.book-price {
-  font-weight: 600;
-  color: var(--navy-700);
-  font-size: 1.02rem;
-}
-
-.add-to-cart-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--navy-700);
-  color: var(--linen-100);
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
-  flex-shrink: 0;
-}
-.add-to-cart-btn:hover {
-  background: var(--gold-600);
-}
-.add-to-cart-btn:active {
-  transform: scale(0.93);
-}
-.add-to-cart-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* ---------------------------------------------------------- */
-/* Skeleton loaders (shown while fetchProducts() is running)   */
+/* تأثير التحميل (Skeleton loaders)                           */
 /* ---------------------------------------------------------- */
 .skeleton-card {
   aspect-ratio: 2 / 3.6;
-  border-radius: 2px;
+  border-radius: 4px;
   background: linear-gradient(
-    100deg,
+    -100deg, /* تم عكس الاتجاه للغة العربية */
     var(--navy-50) 30%,
     var(--linen-200) 50%,
     var(--navy-50) 70%
@@ -186,12 +112,12 @@ body {
   animation: shimmer 1.4s ease-in-out infinite;
 }
 @keyframes shimmer {
-  0% { background-position: 150% 0; }
-  100% { background-position: -50% 0; }
+  0% { background-position: -150% 0; }
+  100% { background-position: 50% 0; }
 }
 
 /* ---------------------------------------------------------- */
-/* Cart sidebar + checkout modal                                */
+/* النوافذ الجانبية (Cart sidebar + checkout modal)           */
 /* ---------------------------------------------------------- */
 .cart-overlay {
   position: fixed;
@@ -205,10 +131,11 @@ body {
   opacity: 1;
 }
 
+/* تم تعديل النوافذ لتفتح من اليسار (left: 0) */
 .cart-panel {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0; 
   bottom: 0;
   width: 100%;
   max-width: 420px;
@@ -216,7 +143,7 @@ body {
   z-index: 51;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
+  transform: translateX(-100%); /* دفع النافذة لليسار خارج الشاشة */
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow-panel);
 }
@@ -227,7 +154,7 @@ body {
 .checkout-modal {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   bottom: 0;
   width: 100%;
   max-width: 460px;
@@ -235,7 +162,7 @@ body {
   z-index: 53;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
+  transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow-panel);
 }
@@ -246,38 +173,14 @@ body {
   z-index: 52;
 }
 
-/* Cart line item */
-.cart-item {
-  display: flex;
-  gap: 0.85rem;
-  align-items: flex-start;
-}
-.cart-item-cover {
-  width: 52px;
-  height: 78px;
-  object-fit: cover;
-  background: var(--navy-50);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-.cart-item-title {
-  font-family: "Fraunces", ui-serif, serif;
-  font-size: 0.94rem;
-  color: var(--navy-700);
-  line-height: 1.25;
-}
-.cart-item-price {
-  font-size: 0.85rem;
-  color: rgba(12, 24, 48, 0.55);
-  margin-top: 2px;
-}
-
+/* ---------------------------------------------------------- */
+/* أزرار السلة (Cart line item & Stepper)                     */
+/* ---------------------------------------------------------- */
 .qty-stepper {
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--navy-100);
   border-radius: 3px;
-  margin-top: 0.5rem;
 }
 .qty-stepper button {
   width: 26px;
@@ -299,35 +202,20 @@ body {
   color: var(--navy-800);
 }
 
-.remove-item-btn {
-  color: rgba(12, 24, 48, 0.4);
-  font-size: 0.78rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-top: 0.4rem;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.remove-item-btn:hover {
-  color: var(--navy-700);
-}
-
 /* ---------------------------------------------------------- */
-/* Form elements (checkout)                                     */
+/* حقول النماذج (Form elements)                               */
 /* ---------------------------------------------------------- */
 .form-label {
   display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: var(--navy-700);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
 }
 .form-input {
   width: 100%;
   border: 1px solid var(--navy-100);
-  border-radius: 3px;
+  border-radius: 4px;
   padding: 0.65rem 0.8rem;
   font-size: 0.94rem;
   font-family: inherit;
@@ -341,7 +229,7 @@ body {
 }
 
 /* ---------------------------------------------------------- */
-/* Toast                                                         */
+/* التنبيهات المنبثقة (Toast)                                 */
 /* ---------------------------------------------------------- */
 .toast {
   position: fixed;
@@ -353,6 +241,7 @@ body {
   padding: 0.75rem 1.25rem;
   border-radius: 4px;
   font-size: 0.9rem;
+  font-weight: bold;
   z-index: 60;
   opacity: 0;
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -365,7 +254,7 @@ body {
 }
 
 /* ---------------------------------------------------------- */
-/* Accessibility: visible focus, reduced motion                */
+/* سهولة الوصول (Accessibility)                               */
 /* ---------------------------------------------------------- */
 a:focus-visible,
 button:focus-visible,
@@ -380,4 +269,4 @@ textarea:focus-visible {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}
+   }
