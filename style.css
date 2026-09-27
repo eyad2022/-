@@ -1,7 +1,3 @@
-/* ============================================================
-   ملف التنسيقات الإضافية (CSS)
-   ============================================================ */
-
 :root {
   --navy-900: #080F1F;
   --navy-800: #0C1830;
@@ -13,24 +9,13 @@
   --gold-300: #DBB559;
   --linen-100: #FCFAF5;
   --linen-200: #F0EAD9;
-  --shadow-panel: 12px 0 32px rgba(8, 15, 31, 0.14); /* تم تعديل الظل ليتناسب مع اليسار */
+  --shadow-panel: 12px 0 32px rgba(8, 15, 31, 0.14);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  overflow-x: hidden;
-}
-
-/* ---------------------------------------------------------- */
-/* تأثيرات الروابط (Nav links)                                */
-/* ---------------------------------------------------------- */
 .nav-link {
   color: var(--navy-800);
   opacity: 0.75;
@@ -38,235 +23,59 @@ body {
   padding-bottom: 2px;
   transition: opacity 0.15s ease;
 }
-.nav-link:hover {
-  opacity: 1;
-}
+.nav-link:hover { opacity: 1; }
 .nav-link::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -3px;
-  width: 0;
-  height: 2px;
-  background: var(--gold-500);
-  transition: width 0.2s ease;
+  content: ""; position: absolute; right: 0; bottom: -3px; width: 0; height: 2px; background: var(--gold-500); transition: width 0.2s ease;
 }
-.nav-link:hover::after {
-  width: 100%;
-}
+.nav-link:hover::after { width: 100%; }
 
-/* ---------------------------------------------------------- */
-/* خلفية قسم البطل (Hero background pattern)                  */
-/* ---------------------------------------------------------- */
 .hero-rule-pattern {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 27px,
-    var(--gold-300) 28px
-  );
+  background-image: repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--gold-300) 28px);
 }
 
-/* ---------------------------------------------------------- */
-/* بطاقات المنتجات (Product cards)                            */
-/* ---------------------------------------------------------- */
 .book-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--linen-100);
-  border: 1px solid var(--navy-50);
-  border-radius: 4px;
-  overflow: hidden;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  display: flex; flex-direction: column; background: var(--linen-100); border: 1px solid var(--navy-50); border-radius: 4px; overflow: hidden; transition: border-color 0.2s ease, transform 0.2s ease;
 }
-.book-card:hover {
-  border-color: var(--gold-300);
-}
+.book-card:hover { border-color: var(--gold-300); }
+.book-cover-wrap { position: relative; aspect-ratio: 2 / 3; background: var(--navy-50); overflow: hidden; }
+.book-cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.book-cover-wrap {
-  position: relative;
-  aspect-ratio: 2 / 3;
-  background: var(--navy-50);
-  overflow: hidden;
-}
-.book-cover-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* ---------------------------------------------------------- */
-/* تأثير التحميل (Skeleton loaders)                           */
-/* ---------------------------------------------------------- */
 .skeleton-card {
-  aspect-ratio: 2 / 3.6;
-  border-radius: 4px;
-  background: linear-gradient(
-    -100deg, /* تم عكس الاتجاه للغة العربية */
-    var(--navy-50) 30%,
-    var(--linen-200) 50%,
-    var(--navy-50) 70%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
+  aspect-ratio: 2 / 3.6; border-radius: 4px;
+  background: linear-gradient(-100deg, var(--navy-50) 30%, var(--linen-200) 50%, var(--navy-50) 70%);
+  background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite;
 }
-@keyframes shimmer {
-  0% { background-position: -150% 0; }
-  100% { background-position: 50% 0; }
-}
+@keyframes shimmer { 0% { background-position: -150% 0; } 100% { background-position: 50% 0; } }
 
-/* ---------------------------------------------------------- */
-/* النوافذ الجانبية (Cart sidebar + checkout modal)           */
-/* ---------------------------------------------------------- */
 .cart-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(8, 15, 31, 0.45);
-  z-index: 50;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  position: fixed; inset: 0; background: rgba(8, 15, 31, 0.45); z-index: 50; opacity: 0; transition: opacity 0.25s ease;
 }
-.cart-overlay.is-visible {
-  opacity: 1;
-}
+.cart-overlay.is-visible { opacity: 1; }
 
-/* تم تعديل النوافذ لتفتح من اليسار (left: 0) */
 .cart-panel {
-  position: fixed;
-  top: 0;
-  left: 0; 
-  bottom: 0;
-  width: 100%;
-  max-width: 420px;
-  background: var(--linen-100);
-  z-index: 51;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(-100%); /* دفع النافذة لليسار خارج الشاشة */
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: var(--shadow-panel);
+  position: fixed; top: 0; left: 0; bottom: 0; width: 100%; max-width: 420px; background: var(--linen-100); z-index: 51; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: var(--shadow-panel);
 }
-.cart-panel.is-open {
-  transform: translateX(0);
-}
+.cart-panel.is-open { transform: translateX(0); }
 
 .checkout-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 460px;
-  background: var(--linen-100);
-  z-index: 53;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: var(--shadow-panel);
+  position: fixed; top: 0; left: 0; bottom: 0; width: 100%; max-width: 460px; background: var(--linen-100); z-index: 53; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: var(--shadow-panel);
 }
-.checkout-modal.is-open {
-  transform: translateX(0);
-}
-#checkout-overlay {
-  z-index: 52;
-}
+.checkout-modal.is-open { transform: translateX(0); }
+#checkout-overlay { z-index: 52; }
 
-/* ---------------------------------------------------------- */
-/* أزرار السلة (Cart line item & Stepper)                     */
-/* ---------------------------------------------------------- */
-.qty-stepper {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--navy-100);
-  border-radius: 3px;
-}
-.qty-stepper button {
-  width: 26px;
-  height: 26px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: var(--navy-700);
-  font-size: 1rem;
-  line-height: 1;
-}
-.qty-stepper button:hover {
-  background: var(--navy-50);
-}
-.qty-stepper span {
-  min-width: 24px;
-  text-align: center;
-  font-size: 0.88rem;
-  color: var(--navy-800);
-}
+.qty-stepper { display: inline-flex; align-items: center; border: 1px solid var(--navy-100); border-radius: 3px; }
+.qty-stepper button { width: 26px; height: 26px; border: none; background: none; cursor: pointer; color: var(--navy-700); font-size: 1rem; line-height: 1; }
+.qty-stepper button:hover { background: var(--navy-50); }
+.qty-stepper span { min-width: 24px; text-align: center; font-size: 0.88rem; color: var(--navy-800); }
 
-/* ---------------------------------------------------------- */
-/* حقول النماذج (Form elements)                               */
-/* ---------------------------------------------------------- */
-.form-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--navy-700);
-  margin-bottom: 0.45rem;
-}
-.form-input {
-  width: 100%;
-  border: 1px solid var(--navy-100);
-  border-radius: 4px;
-  padding: 0.65rem 0.8rem;
-  font-size: 0.94rem;
-  font-family: inherit;
-  color: var(--navy-800);
-  background: var(--linen-100);
-  transition: border-color 0.15s ease;
-}
-.form-input:focus {
-  outline: none;
-  border-color: var(--gold-500);
-}
+.form-label { display: block; font-size: 0.9rem; font-weight: 700; color: var(--navy-700); margin-bottom: 0.45rem; }
+.form-input { width: 100%; border: 1px solid var(--navy-100); border-radius: 4px; padding: 0.65rem 0.8rem; font-size: 0.94rem; font-family: inherit; color: var(--navy-800); background: var(--linen-100); transition: border-color 0.15s ease; }
+.form-input:focus { outline: none; border-color: var(--gold-500); }
 
-/* ---------------------------------------------------------- */
-/* التنبيهات المنبثقة (Toast)                                 */
-/* ---------------------------------------------------------- */
 .toast {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translate(-50%, 12px);
-  background: var(--navy-700);
-  color: var(--linen-100);
-  padding: 0.75rem 1.25rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  z-index: 60;
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-  box-shadow: 0 8px 24px rgba(8, 15, 31, 0.25);
+  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 12px); background: var(--navy-700); color: var(--linen-100); padding: 0.75rem 1.25rem; border-radius: 4px; font-size: 0.9rem; font-weight: bold; z-index: 60; opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; box-shadow: 0 8px 24px rgba(8, 15, 31, 0.25);
 }
-.toast.is-visible {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
+.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---------------------------------------------------------- */
-/* سهولة الوصول (Accessibility)                               */
-/* ---------------------------------------------------------- */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--gold-500);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-   }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
