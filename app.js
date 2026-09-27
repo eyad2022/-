@@ -1,11 +1,9 @@
 /* ============================================================
-   إعدادات واجهة برمجة تطبيقات دفترة (Daftra API)
+   إعدادات دايناميكية: Daftra & Firebase
    ============================================================ */
 
-// >>> ضع رابط حسابك الفرعي في دفترة هنا <<<
+// 1. إعدادات دفترة
 const DAFTRA_BASE_URL = "https://YOUR_SUBDOMAIN.daftra.com";
-
-// >>> ضع مفتاح API الخاص بدفترة هنا <<<
 const DAFTRA_API_TOKEN = "YOUR_DAFTRA_API_KEY_HERE";
 
 function daftraHeaders(extra = {}) {
@@ -17,42 +15,56 @@ function daftraHeaders(extra = {}) {
   };
 }
 
+// 2. إعدادات Firebase
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// تهيئة قراءة Firebase للمتجر
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 const CURRENCY = " ج.م";
 
 /* ============================================================
-   إدارة الحالة والتخزين (State & localStorage)
+   إدارة الحالة والتخزين
    ============================================================ */
-
 const CART_STORAGE_KEY = "publisher_cart";
 let cart = loadCart();
 let productCatalog = [];
+let firestoreMetadata = {}; // لتخزين النبذات القادمة من Firebase
 
 function loadCart() {
   try {
     const raw = localStorage.getItem(CART_STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch (err) {
-    console.error("Failed to read cart from localStorage:", err);
-    return [];
-  }
+  } catch (err) { return []; }
 }
 
 function saveCart() {
-  try {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-  } catch (err) {
-    console.error("Failed to save cart to localStorage:", err);
-  }
+  try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); } catch (err) {}
 }
 
 /* ============================================================
-   الاتصال بدفترة (Daftra API Calls)
+   جلب البيانات ودمجها (The Hybrid Fetch)
    ============================================================ */
 
 async function fetchProducts() {
   showProductsState("loading");
 
   try {
+    // الخطوة الأولى: سحب النبذات والمقاسات من Firebase
+    const snapshot = await db.collection("books_meta").get();
+    snapshot.forEach((doc) => {
+      firestoreMetadata[doc.id] = doc.data(); // حفظ البيانات برقم الكتاب
+    });
+
+    // الخطوة الثانية: سحب الأسعار والمخزون من دفترة
     const response = await fetch(`${DAFTRA_BASE_URL}/api/v2/products`, {
       method: "GET",
       headers: daftraHeaders(),
@@ -62,6 +74,8 @@ async function fetchProducts() {
 
     const payload = await response.json();
     const rawList = Array.isArray(payload) ? payload : payload.data || [];
+    
+    // الخطوة الثالثة: الدمج
     const products = rawList.map(normalizeProduct).filter(Boolean);
 
     productCatalog = products;
@@ -81,16 +95,24 @@ async function fetchProducts() {
 function normalizeProduct(raw) {
   if (!raw) return null;
   const p = raw.Product || raw.product || raw;
-  const id = p.id ?? p.product_id;
-  if (id === undefined) return null;
+  const id = String(p.id ?? p.product_id);
+  if (!p.id && !p.product_id) return null;
+
+  // استخراج النبذة الخاصة بهذا الكتاب المحددة من الفايربيز (لو مش موجودة نحط ديفولت)
+  const meta = firestoreMetadata[id] || { 
+    description: "تفاصيل ونبذة هذا الكتاب ستتوفر قريباً.", 
+    size: "غير محدد" 
+  };
 
   return {
-    id: String(id),
+    id: id,
     title: p.name || p.title || "بدون عنوان",
     author: p.author || p.brand || "دار النشر",
-    category: p.category_name || (p.Category && p.Category.name) || "عام", // سحب القسم من دفترة
+    category: p.category_name || (p.Category && p.Category.name) || "عام",
     price: parseFloat(p.price ?? p.unit_price ?? 0) || 0,
     image: p.image || p.product_image || p.picture_url || placeholderCoverFor(p),
+    description: meta.description,
+    size: meta.size,
     raw: p,
   };
 }
@@ -127,7 +149,7 @@ async function createDaftraInvoice(customer, items) {
 }
 
 /* ============================================================
-   نظام الفلترة والأقسام (Category Filtering)
+   نظام الفلترة وعرض البطاقات
    ============================================================ */
 
 function filterProducts(categoryName) {
@@ -151,10 +173,6 @@ function filterProducts(categoryName) {
     grid.innerHTML = `<div class="col-span-full text-center py-10 font-bold text-navy-800">لا توجد كتب متاحة في هذا القسم حالياً.</div>`;
   }
 }
-
-/* ============================================================
-   عرض المنتجات (Product Rendering)
-   ============================================================ */
 
 function showProductsState(state) {
   const loading = document.getElementById("products-loading");
@@ -189,10 +207,14 @@ function bookCardHTML(book) {
       </div>
       <div class="p-4 flex flex-col gap-2">
         <h3 class="font-bold text-navy-700 text-lg line-clamp-1">${book.title}</h3>
-        <p class="text-sm text-gray-500">${book.author}</p>
-        <div class="mt-2 flex items-center justify-between">
-          <span class="font-bold text-gold-600">${book.price}${CURRENCY}</span>
-          <button data-add-to-cart="${book.id}" class="bg-navy-700 text-white px-3 py-1.5 rounded-sm hover:bg-gold-500 transition text-sm">إضافة للسلة</button>
+        <p class="text-sm text-gray-500 font-bold">${book.author}</p>
+        
+        <p class="text-xs text-navy-800/70 mt-1 line-clamp-2 leading-relaxed" title="${book.description}">${book.description}</p>
+        <span class="text-xs bg-navy-50 text-navy-700 px-2 py-1 rounded w-max mt-1 font-bold">المقاس: ${book.size}</span>
+        
+        <div class="mt-3 flex items-center justify-between">
+          <span class="font-bold text-gold-600 text-lg">${book.price}${CURRENCY}</span>
+          <button data-add-to-cart="${book.id}" class="bg-navy-700 text-white px-3 py-1.5 rounded-sm hover:bg-gold-500 transition text-sm font-bold">إضافة للسلة</button>
         </div>
       </div>
     </article>
@@ -200,18 +222,16 @@ function bookCardHTML(book) {
 }
 
 /* ============================================================
-   منطق السلة (Cart Logic)
+   منطق السلة
    ============================================================ */
 
 function addToCart(product, quantity = 1) {
   const existing = cart.find((item) => item.id === product.id);
-
   if (existing) {
     existing.quantity += quantity;
   } else {
     cart.push({ ...product, quantity });
   }
-
   saveCart();
   updateCartUI();
   showToast(`تمت إضافة "${product.title}" للسلة`);
@@ -220,12 +240,10 @@ function addToCart(product, quantity = 1) {
 function updateItemQuantity(id, delta) {
   const item = cart.find((i) => i.id === id);
   if (!item) return;
-
   item.quantity += delta;
   if (item.quantity <= 0) {
     cart = cart.filter((i) => i.id !== id);
   }
-
   saveCart();
   updateCartUI();
 }
@@ -252,15 +270,13 @@ function cartItemCount() {
 
 function updateCartUI() {
   document.getElementById("cart-count").textContent = cartItemCount();
-
   const itemsEl = document.getElementById("cart-items");
   if (cart.length === 0) {
-    itemsEl.innerHTML = "<p class='text-center py-10 text-gray-500'>السلة فارغة.</p>";
+    itemsEl.innerHTML = "<p class='text-center py-10 text-gray-500 font-bold'>السلة فارغة.</p>";
   } else {
     itemsEl.innerHTML = cart.map(cartItemHTML).join("");
     wireCartItemControls(itemsEl);
   }
-
   document.getElementById("cart-total").textContent = cartTotal() + CURRENCY;
 }
 
@@ -273,11 +289,11 @@ function cartItemHTML(item) {
         <p class="text-gold-600 font-bold text-sm mt-1">${item.price}${CURRENCY}</p>
         <div class="flex items-center gap-3 mt-2">
           <div class="flex items-center border border-navy-100 rounded-sm">
-            <button type="button" class="w-7 h-7 flex items-center justify-center hover:bg-navy-50" data-qty-increase>+</button>
-            <span class="w-6 text-center text-sm">${item.quantity}</span>
-            <button type="button" class="w-7 h-7 flex items-center justify-center hover:bg-navy-50" data-qty-decrease>&minus;</button>
+            <button type="button" class="w-7 h-7 flex items-center justify-center hover:bg-navy-50 font-bold" data-qty-increase>+</button>
+            <span class="w-6 text-center text-sm font-bold">${item.quantity}</span>
+            <button type="button" class="w-7 h-7 flex items-center justify-center hover:bg-navy-50 font-bold" data-qty-decrease>&minus;</button>
           </div>
-          <button type="button" class="text-red-500 text-xs underline hover:text-red-700" data-remove-item>حذف</button>
+          <button type="button" class="text-red-500 text-xs underline hover:text-red-700 font-bold" data-remove-item>حذف</button>
         </div>
       </div>
     </div>
@@ -294,12 +310,11 @@ function wireCartItemControls(container) {
 }
 
 /* ============================================================
-   منطق الدفع (Checkout Logic)
+   منطق الدفع
    ============================================================ */
 
 async function submitOrder(event) {
   event.preventDefault();
-
   if (cart.length === 0) return;
 
   const form = event.target;
@@ -317,7 +332,6 @@ async function submitOrder(event) {
   
   try {
     await createDaftraInvoice(customer, cart);
-    
     statusEl.textContent = "تم تسجيل طلبك بنجاح! سنتواصل معك قريباً.";
     statusEl.className = "text-green-600 block mt-2 font-bold text-center";
     
@@ -335,12 +349,12 @@ async function submitOrder(event) {
     statusEl.className = "text-red-600 block mt-2 font-bold text-center";
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = "تأكيد الطلب";
+    submitBtn.textContent = "تأكيد وإرسال الطلب";
   }
 }
 
 /* ============================================================
-   توصيل واجهة المستخدم والتأثيرات (UI Wiring & Animations)
+   توصيل واجهة المستخدم
    ============================================================ */
 
 function openCart() {
@@ -405,6 +419,7 @@ function wireStaticUI() {
   document.getElementById("checkout-form").addEventListener("submit", submitOrder);
 
   document.getElementById("products-retry").addEventListener("click", fetchProducts);
+  document.getElementById("refresh-btn").addEventListener("click", fetchProducts);
 
   document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -413,10 +428,6 @@ function wireStaticUI() {
     });
   });
 }
-
-/* ============================================================
-   بدء التشغيل (Init)
-   ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
   wireStaticUI();
