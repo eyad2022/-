@@ -4,31 +4,25 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>دار النشر | متجر الكتب الإلكتروني</title>
-<meta name="description" content="متجر كتب إلكتروني متصل بنظام دفترة" />
+<meta name="description" content="متجر كتب إلكتروني متصل بنظام دفترة وفايربيز" />
 
-<!-- استدعاء Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- خط تجوال من Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
-<!-- إعدادات ألوان وخطوط Tailwind -->
+<!-- استدعاء مكتبات Firebase لسحب النبذات -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          navy: {
-            DEFAULT: '#12213F', 50: '#EEF1F7', 100: '#D6DCEA', 600: '#1A2E54', 700: '#12213F', 800: '#0C1830', 900: '#080F1F',
-          },
-          gold: {
-            DEFAULT: '#C6982F', 50: '#FBF5E6', 100: '#F3E3B8', 300: '#DBB559', 500: '#C6982F', 600: '#A87C22',
-          },
-          linen: {
-            DEFAULT: '#F7F3EA', 100: '#FCFAF5', 200: '#F0EAD9',
-          },
+          navy: { DEFAULT: '#12213F', 50: '#EEF1F7', 100: '#D6DCEA', 600: '#1A2E54', 700: '#12213F', 800: '#0C1830', 900: '#080F1F' },
+          gold: { DEFAULT: '#C6982F', 50: '#FBF5E6', 100: '#F3E3B8', 300: '#DBB559', 500: '#C6982F', 600: '#A87C22' },
+          linen: { DEFAULT: '#F7F3EA', 100: '#FCFAF5', 200: '#F0EAD9' },
         },
         fontFamily: {
           display: ['"Tajawal"', 'sans-serif'],
@@ -44,20 +38,14 @@
 
 <body class="bg-linen text-navy-800 font-body antialiased">
 
-  <!-- ============================================================ -->
-  <!-- شريط التنقل (Navbar) -->
-  <!-- ============================================================ -->
   <header class="sticky top-0 z-40 bg-linen-100/90 backdrop-blur border-b border-navy-100">
     <div class="max-w-6xl mx-auto px-5 md:px-8">
       <div class="flex items-center justify-between h-16 md:h-20">
-
-        <!-- الشعار -->
         <a href="#" class="flex items-center gap-2 shrink-0">
           <span class="font-display text-2xl md:text-[1.7rem] font-bold leading-none text-navy-700">دار النشر</span>
           <span class="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-gold-500 translate-y-[2px]"></span>
         </a>
 
-        <!-- روابط الأقسام (للديسكتوب) -->
         <nav class="hidden md:flex items-center gap-8 text-[1.1rem] font-medium">
           <button class="nav-link filter-btn" data-category="الكل">جميع الإصدارات</button>
           <button class="nav-link filter-btn" data-category="روايات">روايات</button>
@@ -65,26 +53,16 @@
           <button class="nav-link filter-btn" data-category="فلسفة">فلسفة</button>
         </nav>
 
-        <!-- السلة وزر القائمة للموبايل -->
         <div class="flex items-center gap-3">
-          <button id="cart-toggle" type="button" aria-label="فتح السلة" aria-haspopup="dialog" aria-expanded="false"
-            class="relative inline-flex items-center justify-center w-11 h-11 rounded-full hover:bg-navy-50 transition-colors">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="text-navy-700">
-              <path d="M6 6h15l-1.5 9h-12L4 3H2" />
-              <circle cx="9" cy="20" r="1.4" />
-              <circle cx="18" cy="20" r="1.4" />
-            </svg>
-            <span id="cart-count"
-              class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-500 text-navy-900 text-[11px] font-bold flex items-center justify-center leading-none">0</span>
+          <button id="cart-toggle" type="button" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full hover:bg-navy-50 transition-colors">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="text-navy-700"><path d="M6 6h15l-1.5 9h-12L4 3H2" /><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /></svg>
+            <span id="cart-count" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-500 text-navy-900 text-[11px] font-bold flex items-center justify-center leading-none">0</span>
           </button>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ============================================================ -->
-  <!-- قسم البطل (Hero Section) -->
-  <!-- ============================================================ -->
   <section class="relative overflow-hidden bg-navy-700">
     <div class="absolute inset-0 hero-rule-pattern opacity-[0.08]" aria-hidden="true"></div>
     <div class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28 relative">
@@ -100,9 +78,6 @@
     </div>
   </section>
 
-  <!-- ============================================================ -->
-  <!-- الأقسام البصرية (Visual Categories) -->
-  <!-- ============================================================ -->
   <section class="max-w-6xl mx-auto px-5 md:px-8 py-10 mt-6 border-b border-navy-100">
     <h2 class="font-display text-2xl md:text-3xl text-navy-700 mb-6 font-bold text-center">تصفح أقسام المكتبة</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -125,9 +100,6 @@
     </div>
   </section>
 
-  <!-- ============================================================ -->
-  <!-- شبكة المنتجات (Products Grid) -->
-  <!-- ============================================================ -->
   <main>
     <section id="latest-releases" class="max-w-6xl mx-auto px-5 md:px-8 py-16 md:py-20">
       <div class="flex items-end justify-between mb-10 gap-4">
@@ -135,44 +107,32 @@
           <h2 class="font-display text-3xl md:text-4xl font-bold text-navy-700">جميع الإصدارات</h2>
           <p class="text-navy-800/60 mt-2">مخزون محدث باستمرار، مباشرة من الكتالوج.</p>
         </div>
-        <button id="products-retry" type="button"
-          class="hidden sm:inline-flex items-center gap-2 text-sm text-navy-700 border border-navy-100 hover:border-gold-500 hover:text-gold-600 px-4 py-2 rounded-sm transition-colors">
+        <button id="refresh-btn" type="button" class="hidden sm:inline-flex items-center gap-2 text-sm text-navy-700 border border-navy-100 hover:border-gold-500 hover:text-gold-600 px-4 py-2 rounded-sm transition-colors">
           تحديث الكتب
         </button>
       </div>
 
-      <!-- حالة التحميل -->
       <div id="products-loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">
         <div class="skeleton-card"></div><div class="skeleton-card"></div>
         <div class="skeleton-card"></div><div class="skeleton-card"></div>
-        <div class="skeleton-card hidden lg:block"></div><div class="skeleton-card hidden lg:block"></div>
-        <div class="skeleton-card hidden sm:block lg:block"></div><div class="skeleton-card hidden sm:block lg:block"></div>
       </div>
 
-      <!-- حالة الخطأ -->
       <div id="products-error" class="hidden text-center py-16 px-6 border border-navy-100 rounded-sm">
         <p class="font-display text-xl text-navy-700 mb-2 font-bold">لم يتم تحميل الرف.</p>
         <p class="text-navy-800/60 mb-6" id="products-error-detail">تعذر الاتصال بنظام دفترة. يرجى التحقق من مفاتيح الربط في ملف app.js.</p>
-        <button id="products-retry" type="button"
-          class="inline-flex items-center gap-2 bg-navy-700 hover:bg-navy-600 text-linen-100 font-medium px-6 py-3 rounded-sm transition-colors">
+        <button id="products-retry" type="button" class="inline-flex items-center gap-2 bg-navy-700 hover:bg-navy-600 text-linen-100 font-medium px-6 py-3 rounded-sm transition-colors">
           حاول مرة أخرى
         </button>
       </div>
 
-      <!-- حالة المخزون الفارغ -->
       <div id="products-empty" class="hidden text-center py-16 px-6 border border-dashed border-navy-100 rounded-sm">
         <p class="font-display text-xl font-bold text-navy-700 mb-2">لا توجد كتب على الرف حتى الآن.</p>
-        <p class="text-navy-800/60">أضف المنتجات في دفترة وستظهر هنا مباشرة.</p>
       </div>
 
-      <!-- شبكة العرض الديناميكية -->
       <div id="products-grid" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7"></div>
     </section>
   </main>
 
-  <!-- ============================================================ -->
-  <!-- الفوتر (Footer) -->
-  <!-- ============================================================ -->
   <footer class="bg-navy-700 text-navy-100/70 mt-8">
     <div class="max-w-6xl mx-auto px-5 md:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
       <span class="font-display text-lg font-bold text-linen-100">دار النشر</span>
@@ -180,50 +140,35 @@
     </div>
   </footer>
 
-  <!-- ============================================================ -->
-  <!-- السلة الجانبية (Cart Sidebar) -->
-  <!-- ============================================================ -->
   <div id="cart-overlay" class="cart-overlay" hidden></div>
 
-  <aside id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" aria-label="سلة المشتريات" hidden>
+  <aside id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" hidden>
     <div class="flex items-center justify-between px-6 py-5 border-b border-navy-100">
       <h2 class="font-display text-xl font-bold text-navy-700">سلة المشتريات</h2>
-      <button id="cart-close" type="button" aria-label="إغلاق السلة"
-        class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
+      <button id="cart-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
-
-    <!-- قائمة العناصر -->
     <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-5"></div>
-
-    <!-- تذييل السلة -->
     <div id="cart-footer" class="border-t border-navy-100 px-6 py-5 space-y-4">
       <div class="flex items-center justify-between font-display text-lg font-bold text-navy-700">
-        <span>الإجمالي</span>
-        <span id="cart-total">0 ج.م</span>
+        <span>الإجمالي</span><span id="cart-total">0 ج.م</span>
       </div>
-      <button id="checkout-open" type="button"
-        class="w-full bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold py-3.5 rounded-sm transition-colors">
+      <button id="checkout-open" type="button" class="w-full bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold py-3.5 rounded-sm transition-colors">
         إتمام الطلب
       </button>
     </div>
   </aside>
 
-  <!-- ============================================================ -->
-  <!-- نافذة الدفع (Checkout Modal) -->
-  <!-- ============================================================ -->
   <div id="checkout-overlay" class="cart-overlay" hidden></div>
 
-  <div id="checkout-modal" class="checkout-modal" role="dialog" aria-modal="true" aria-label="إتمام الطلب" hidden>
+  <div id="checkout-modal" class="checkout-modal" role="dialog" aria-modal="true" hidden>
     <div class="flex items-center justify-between px-6 py-5 border-b border-navy-100">
       <h2 class="font-display text-xl font-bold text-navy-700">تأكيد الطلب</h2>
-      <button id="checkout-close" type="button" aria-label="إغلاق"
-        class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
+      <button id="checkout-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
-
     <form id="checkout-form" class="px-6 py-5 space-y-4 overflow-y-auto">
       <div>
         <label for="customer-name" class="form-label">الاسم بالكامل</label>
@@ -237,19 +182,15 @@
         <label for="customer-address" class="form-label">عنوان التوصيل (بالتفصيل)</label>
         <textarea id="customer-address" name="address" required rows="3" class="form-input resize-none" placeholder="المحافظة، المدينة، اسم الشارع، رقم العمارة"></textarea>
       </div>
-
-      <p id="checkout-status" class="hidden text-sm" role="status"></p>
-
-      <button id="checkout-submit" type="submit"
-        class="w-full bg-navy-700 hover:bg-navy-600 disabled:opacity-60 disabled:cursor-not-allowed text-linen-100 font-bold py-3.5 rounded-sm transition-colors mt-4">
+      <p id="checkout-status" class="hidden text-sm"></p>
+      <button id="checkout-submit" type="submit" class="w-full bg-navy-700 hover:bg-navy-600 disabled:opacity-60 text-linen-100 font-bold py-3.5 rounded-sm transition-colors mt-4">
         تأكيد وإرسال الطلب
       </button>
     </form>
   </div>
 
-  <!-- التنبيهات (Toast) -->
   <div id="toast" class="toast" hidden></div>
 
   <script src="app.js"></script>
 </body>
-  </html>
+</html>
