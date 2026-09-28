@@ -188,7 +188,8 @@ function showProductsState(state) {
 
 function renderProducts(products) {
   const grid = document.getElementById("products-grid");
-  grid.innerHTML = products.map(bookCardHTML).join("");
+  // تمرير الـ index لتطبيق تأثير التباين الديناميكي
+  grid.innerHTML = products.map((book, index) => bookCardHTML(book, index)).join("");
 
   grid.querySelectorAll("[data-add-to-cart]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -199,27 +200,63 @@ function renderProducts(products) {
   });
 }
 
-function bookCardHTML(book) {
+function bookCardHTML(book, index) {
+  // تصميم شبكي ديناميكي: رفع البطاقات الفردية قليلاً لتكوين شكل Masonry عصري
+  const staggerClass = index % 2 !== 0 ? "md:translate-y-8" : "";
+  
+  // شارات ديناميكية (Badges) بناءً على السعر (أكثر مبيعاً أو جديد)
+  const badge = book.price > 100 
+    ? `<span class="absolute top-4 right-4 bg-orange-500 text-white text-[11px] font-black px-3 py-1.5 rounded-full z-10 shadow-md">🔥 الأكثر مبيعاً</span>` 
+    : `<span class="absolute top-4 right-4 bg-purple-500 text-white text-[11px] font-black px-3 py-1.5 rounded-full z-10 shadow-md">✨ جديد</span>`;
+
   return `
-    <article class="book-card border rounded-md shadow-sm bg-white overflow-hidden hover:border-gold-500 transition">
-      <div class="book-cover-wrap aspect-[3/4] bg-gray-100">
-        <img src="${book.image}" alt="${book.title}" loading="lazy" class="w-full h-full object-cover" />
+    <article class="book-card relative flex flex-col ${staggerClass}">
+      ${badge}
+      <div class="book-cover-wrap aspect-[3/4] overflow-hidden relative bg-sky-100">
+        <!-- تدرج لوني خفيف أسفل الغلاف -->
+        <div class="absolute inset-0 bg-gradient-to-t from-navy-900/40 to-transparent z-0"></div>
+        <img src="${book.image}" alt="${book.title}" loading="lazy" class="w-full h-full object-cover relative z-[-1]" />
       </div>
-      <div class="p-4 flex flex-col gap-2">
-        <h3 class="font-bold text-navy-700 text-lg line-clamp-1">${book.title}</h3>
-        <p class="text-sm text-gray-500 font-bold">${book.author}</p>
+      <!-- معلومات الكتاب ترتفع قليلاً فوق الغلاف -->
+      <div class="p-5 flex flex-col gap-2 relative bg-white z-10 -mt-4 rounded-t-3xl h-full">
+        <h3 class="font-black text-navy-800 text-lg line-clamp-1">${book.title}</h3>
+        <p class="text-sm text-sky-600 font-bold">${book.author}</p>
+        <p class="text-xs text-navy-700/60 mt-1 line-clamp-2 leading-relaxed font-medium" title="${book.description}">${book.description}</p>
         
-        <p class="text-xs text-navy-800/70 mt-1 line-clamp-2 leading-relaxed" title="${book.description}">${book.description}</p>
-        <span class="text-xs bg-navy-50 text-navy-700 px-2 py-1 rounded w-max mt-1 font-bold">المقاس: ${book.size}</span>
-        
-        <div class="mt-3 flex items-center justify-between">
-          <span class="font-bold text-gold-600 text-lg">${book.price}${CURRENCY}</span>
-          <button data-add-to-cart="${book.id}" class="bg-navy-700 text-white px-3 py-1.5 rounded-sm hover:bg-gold-500 transition text-sm font-bold">إضافة للسلة</button>
+        <div class="mt-auto pt-4 flex items-center justify-between">
+          <span class="font-black text-orange-500 text-xl">${book.price}${CURRENCY}</span>
+          <button data-add-to-cart="${book.id}" class="bg-navy-800 text-white w-10 h-10 rounded-full hover:bg-orange-500 transition-colors flex items-center justify-center font-bold text-xl shadow-md border-2 border-transparent hover:border-orange-200">
+            +
+          </button>
         </div>
       </div>
     </article>
   `;
 }
+
+// دالة تحديث شكل العناصر في السلة (في app.js) لتناسب التصميم المدور الجديد
+function cartItemHTML(item) {
+  return `
+    <div class="cart-item flex gap-4 bg-white p-3 rounded-2xl border border-sky-100 shadow-sm" data-cart-item="${item.id}">
+      <img src="${item.image}" alt="" class="w-16 h-20 object-cover rounded-xl" />
+      <div class="flex-1 min-w-0 flex flex-col justify-center">
+        <h4 class="font-black text-navy-800 text-sm line-clamp-1">${item.title}</h4>
+        <p class="text-orange-500 font-black text-sm mt-1">${item.price}${CURRENCY}</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="qty-stepper">
+            <button type="button" data-qty-increase>+</button>
+            <span>${item.quantity}</span>
+            <button type="button" data-qty-decrease>&minus;</button>
+          </div>
+          <button type="button" class="text-red-400 bg-red-50 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors" data-remove-item>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 
 /* ============================================================
    منطق السلة
