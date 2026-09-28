@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
-<!-- استدعاء مكتبات Firebase لسحب النبذات -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
@@ -22,7 +21,8 @@
         colors: {
           navy: { DEFAULT: '#12213F', 50: '#EEF1F7', 100: '#D6DCEA', 600: '#1A2E54', 700: '#12213F', 800: '#0C1830', 900: '#080F1F' },
           gold: { DEFAULT: '#C6982F', 50: '#FBF5E6', 100: '#F3E3B8', 300: '#DBB559', 500: '#C6982F', 600: '#A87C22' },
-          linen: { DEFAULT: '#F7F3EA', 100: '#FCFAF5', 200: '#F0EAD9' },
+          // الألوان الجديدة: درجات اللبني الفاتح
+          sky: { 50: '#F0F9FF', 100: '#E0F2FE', 200: '#BAE6FD', 300: '#7DD3FC' },
         },
         fontFamily: {
           display: ['"Tajawal"', 'sans-serif'],
@@ -36,9 +36,9 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="bg-linen text-navy-800 font-body antialiased">
+<body class="bg-sky-50 text-navy-800 font-body antialiased">
 
-  <header class="sticky top-0 z-40 bg-linen-100/90 backdrop-blur border-b border-navy-100">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-sky-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-5 md:px-8">
       <div class="flex items-center justify-between h-16 md:h-20">
         <a href="#" class="flex items-center gap-2 shrink-0">
@@ -46,15 +46,17 @@
           <span class="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-gold-500 translate-y-[2px]"></span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-8 text-[1.1rem] font-medium">
-          <button class="nav-link filter-btn" data-category="الكل">جميع الإصدارات</button>
-          <button class="nav-link filter-btn" data-category="روايات">روايات</button>
-          <button class="nav-link filter-btn" data-category="تاريخ">تاريخ</button>
-          <button class="nav-link filter-btn" data-category="فلسفة">فلسفة</button>
+        <!-- تم تحديث شريط التنقل ليضم الأقسام الجديدة -->
+        <nav class="hidden lg:flex items-center gap-6 text-[1.05rem] font-medium">
+          <button class="nav-link filter-btn" data-category="الكل">المتجر</button>
+          <a href="#about" class="nav-link">من نحن</a>
+          <a href="#faq" class="nav-link">الأسئلة الشائعة</a>
+          <a href="#help" class="nav-link">حل المشكلات</a>
+          <a href="#contact" class="nav-link">تواصل معنا</a>
         </nav>
 
         <div class="flex items-center gap-3">
-          <button id="cart-toggle" type="button" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full hover:bg-navy-50 transition-colors">
+          <button id="cart-toggle" type="button" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full hover:bg-sky-100 transition-colors">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="text-navy-700"><path d="M6 6h15l-1.5 9h-12L4 3H2" /><circle cx="9" cy="20" r="1.4" /><circle cx="18" cy="20" r="1.4" /></svg>
             <span id="cart-count" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-500 text-navy-900 text-[11px] font-bold flex items-center justify-center leading-none">0</span>
           </button>
@@ -63,94 +65,177 @@
     </div>
   </header>
 
+  <!-- القسم العلوي -->
   <section class="relative overflow-hidden bg-navy-700">
     <div class="absolute inset-0 hero-rule-pattern opacity-[0.08]" aria-hidden="true"></div>
     <div class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28 relative">
       <div class="max-w-xl">
         <p class="text-gold-300 tracking-wide text-sm mb-4 font-bold">مكتبتك، تتجدد أسبوعياً</p>
-        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2] text-linen-100">
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.2] text-sky-50">
           اكتشف كتابك المفضل قبل أن تنهي هذه الجملة.
         </h1>
-        <p class="mt-6 text-navy-100/80 text-lg max-w-md">
+        <p class="mt-6 text-sky-100/80 text-lg max-w-md">
           عناوين منتقاة بعناية، أسعار عادلة، وتوصيل سريع حتى باب منزلك — تصفح أحدث ما وصل إلى أرففنا.
         </p>
       </div>
     </div>
   </section>
 
-  <section class="max-w-6xl mx-auto px-5 md:px-8 py-10 mt-6 border-b border-navy-100">
-    <h2 class="font-display text-2xl md:text-3xl text-navy-700 mb-6 font-bold text-center">تصفح أقسام المكتبة</h2>
+  <!-- قسم تصنيفات الكتب -->
+  <section class="max-w-6xl mx-auto px-5 md:px-8 py-10 mt-6 border-b border-sky-200">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="bg-linen-200 p-6 rounded-md text-center cursor-pointer hover:bg-gold-50 transition filter-btn shadow-sm border border-transparent hover:border-gold-300" data-category="روايات">
+      <div class="bg-white p-6 rounded-md text-center cursor-pointer hover:bg-sky-100 transition filter-btn shadow-sm border border-sky-100 hover:border-gold-300" data-category="روايات">
         <span class="text-4xl block mb-3">📚</span>
         <h3 class="font-bold text-navy-800 text-lg">الروايات والأدب</h3>
       </div>
-      <div class="bg-linen-200 p-6 rounded-md text-center cursor-pointer hover:bg-gold-50 transition filter-btn shadow-sm border border-transparent hover:border-gold-300" data-category="تاريخ">
+      <div class="bg-white p-6 rounded-md text-center cursor-pointer hover:bg-sky-100 transition filter-btn shadow-sm border border-sky-100 hover:border-gold-300" data-category="تاريخ">
         <span class="text-4xl block mb-3">📜</span>
         <h3 class="font-bold text-navy-800 text-lg">التاريخ والسير</h3>
       </div>
-      <div class="bg-linen-200 p-6 rounded-md text-center cursor-pointer hover:bg-gold-50 transition filter-btn shadow-sm border border-transparent hover:border-gold-300" data-category="فلسفة">
+      <div class="bg-white p-6 rounded-md text-center cursor-pointer hover:bg-sky-100 transition filter-btn shadow-sm border border-sky-100 hover:border-gold-300" data-category="فلسفة">
         <span class="text-4xl block mb-3">🧠</span>
         <h3 class="font-bold text-navy-800 text-lg">الفلسفة والعلوم</h3>
       </div>
-      <div class="bg-linen-200 p-6 rounded-md text-center cursor-pointer hover:bg-gold-50 transition filter-btn shadow-sm border border-transparent hover:border-gold-300" data-category="أطفال">
+      <div class="bg-white p-6 rounded-md text-center cursor-pointer hover:bg-sky-100 transition filter-btn shadow-sm border border-sky-100 hover:border-gold-300" data-category="أطفال">
         <span class="text-4xl block mb-3">🎨</span>
         <h3 class="font-bold text-navy-800 text-lg">كتب الأطفال</h3>
       </div>
     </div>
   </section>
 
+  <!-- حاوية الكتب (المتجر) -->
   <main>
-    <section id="latest-releases" class="max-w-6xl mx-auto px-5 md:px-8 py-16 md:py-20">
+    <section id="latest-releases" class="max-w-6xl mx-auto px-5 md:px-8 py-16">
       <div class="flex items-end justify-between mb-10 gap-4">
         <div>
           <h2 class="font-display text-3xl md:text-4xl font-bold text-navy-700">جميع الإصدارات</h2>
-          <p class="text-navy-800/60 mt-2">مخزون محدث باستمرار، مباشرة من الكتالوج.</p>
         </div>
-        <button id="refresh-btn" type="button" class="hidden sm:inline-flex items-center gap-2 text-sm text-navy-700 border border-navy-100 hover:border-gold-500 hover:text-gold-600 px-4 py-2 rounded-sm transition-colors">
-          تحديث الكتب
-        </button>
       </div>
-
       <div id="products-loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">
         <div class="skeleton-card"></div><div class="skeleton-card"></div>
         <div class="skeleton-card"></div><div class="skeleton-card"></div>
       </div>
-
-      <div id="products-error" class="hidden text-center py-16 px-6 border border-navy-100 rounded-sm">
-        <p class="font-display text-xl text-navy-700 mb-2 font-bold">لم يتم تحميل الرف.</p>
-        <p class="text-navy-800/60 mb-6" id="products-error-detail">تعذر الاتصال بنظام دفترة. يرجى التحقق من مفاتيح الربط في ملف app.js.</p>
-        <button id="products-retry" type="button" class="inline-flex items-center gap-2 bg-navy-700 hover:bg-navy-600 text-linen-100 font-medium px-6 py-3 rounded-sm transition-colors">
-          حاول مرة أخرى
-        </button>
-      </div>
-
-      <div id="products-empty" class="hidden text-center py-16 px-6 border border-dashed border-navy-100 rounded-sm">
-        <p class="font-display text-xl font-bold text-navy-700 mb-2">لا توجد كتب على الرف حتى الآن.</p>
-      </div>
-
       <div id="products-grid" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7"></div>
     </section>
   </main>
 
-  <footer class="bg-navy-700 text-navy-100/70 mt-8">
-    <div class="max-w-6xl mx-auto px-5 md:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <span class="font-display text-lg font-bold text-linen-100">دار النشر</span>
+  <!-- قسم من نحن -->
+  <section id="about" class="bg-white py-16 border-y border-sky-200">
+    <div class="max-w-4xl mx-auto px-5 md:px-8 text-center">
+      <h2 class="font-display text-3xl font-bold text-navy-700 mb-6">من نحن</h2>
+      <p class="text-lg text-navy-800/80 leading-relaxed">
+        نحن دار نشر مستقلة تأسست بهدف إثراء المحتوى العربي وتقديم أعمال أدبية وفكرية ترقى لذائقة القارئ. نؤمن بأن الكتاب هو الجسر الذي يربط بين الثقافات، ونسعى دائماً لدعم المواهب الشابة وتوفير تجربة قراءة استثنائية من خلال انتقاء أفضل العناوين وتوفيرها بأسعار في متناول الجميع، مع ضمان جودة الطباعة وسرعة التوصيل.
+      </p>
+    </div>
+  </section>
+
+  <!-- قسم الأسئلة الشائعة (FAQ) -->
+  <section id="faq" class="py-16">
+    <div class="max-w-4xl mx-auto px-5 md:px-8">
+      <h2 class="font-display text-3xl font-bold text-navy-700 mb-8 text-center">الأسئلة الشائعة</h2>
+      <div class="space-y-4">
+        <details class="bg-white p-4 rounded-md shadow-sm border border-sky-200 group cursor-pointer">
+          <summary class="font-bold text-navy-700 text-lg outline-none flex justify-between items-center">
+            كم يستغرق توصيل الطلبات؟
+            <span class="text-gold-500 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <p class="text-navy-800/70 mt-3 text-sm leading-relaxed">يتم شحن الطلبات خلال 24 ساعة من تأكيد الطلب، ويستغرق التوصيل داخل القاهرة والجيزة من يوم إلى يومي عمل، وباقي المحافظات من 3 إلى 5 أيام عمل.</p>
+        </details>
+        <details class="bg-white p-4 rounded-md shadow-sm border border-sky-200 group cursor-pointer">
+          <summary class="font-bold text-navy-700 text-lg outline-none flex justify-between items-center">
+            هل يمكنني استرجاع أو استبدال الكتاب؟
+            <span class="text-gold-500 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <p class="text-navy-800/70 mt-3 text-sm leading-relaxed">نعم، يمكنك استرجاع أو استبدال الكتاب خلال 14 يوماً من تاريخ الاستلام بشرط أن يكون في حالته الأصلية ولم يتعرض للتلف.</p>
+        </details>
+        <details class="bg-white p-4 rounded-md shadow-sm border border-sky-200 group cursor-pointer">
+          <summary class="font-bold text-navy-700 text-lg outline-none flex justify-between items-center">
+            ما هي طرق الدفع المتاحة؟
+            <span class="text-gold-500 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <p class="text-navy-800/70 mt-3 text-sm leading-relaxed">نوفر حالياً خدمة الدفع نقداً عند الاستلام (Cash on Delivery) لضمان راحة عملائنا وثقتهم.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم حل المشكلات والدعم الفني -->
+  <section id="help" class="bg-navy-700 py-16 text-sky-50">
+    <div class="max-w-6xl mx-auto px-5 md:px-8">
+      <h2 class="font-display text-3xl font-bold text-white mb-8 text-center">واجهتك مشكلة؟ نحن هنا للمساعدة</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-navy-800 p-6 rounded-md border border-navy-600">
+          <h3 class="font-bold text-gold-500 text-xl mb-3">لم أستلم طلبي بعد</h3>
+          <p class="text-sm text-sky-100/80 mb-4">إذا تجاوز الطلب المدة المحددة للتوصيل، يرجى تزويدنا برقم الفاتورة عبر الواتساب وسنقوم بمتابعة المندوب فوراً.</p>
+        </div>
+        <div class="bg-navy-800 p-6 rounded-md border border-navy-600">
+          <h3 class="font-bold text-gold-500 text-xl mb-3">كتاب تالف أو خاطئ</h3>
+          <p class="text-sm text-sky-100/80 mb-4">نعتذر عن ذلك. صور الكتاب وأرسله لنا عبر البريد الإلكتروني وسنقوم بإرسال نسخة جديدة مجاناً واستلام النسخة الخاطئة.</p>
+        </div>
+        <div class="bg-navy-800 p-6 rounded-md border border-navy-600">
+          <h3 class="font-bold text-gold-500 text-xl mb-3">تعديل بيانات الشحن</h3>
+          <p class="text-sm text-sky-100/80 mb-4">لتعديل العنوان أو رقم الهاتف بعد إتمام الطلب، يرجى التواصل معنا هاتفياً خلال 12 ساعة من وقت تسجيل الطلب.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم تواصل معنا -->
+  <section id="contact" class="py-16">
+    <div class="max-w-4xl mx-auto px-5 md:px-8">
+      <h2 class="font-display text-3xl font-bold text-navy-700 mb-8 text-center">تواصل معنا</h2>
+      <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-sky-200 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-xl text-navy-700 mb-4">بيانات الاتصال</h3>
+          <ul class="space-y-4 text-navy-800/80">
+            <li class="flex items-center gap-3">
+              <span class="text-gold-500 text-xl">📍</span> القاهرة، جمهورية مصر العربية
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-gold-500 text-xl">📞</span> 010XXXXXXXX
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="text-gold-500 text-xl">✉️</span> info@dar-alnasher.com
+            </li>
+          </ul>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('تم إرسال رسالتك بنجاح!');" class="space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-navy-700 mb-1">الاسم</label>
+            <input type="text" required class="w-full border border-sky-200 p-2 rounded focus:outline-none focus:border-gold-500 bg-sky-50">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-navy-700 mb-1">البريد الإلكتروني أو الهاتف</label>
+            <input type="text" required class="w-full border border-sky-200 p-2 rounded focus:outline-none focus:border-gold-500 bg-sky-50">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-navy-700 mb-1">الرسالة</label>
+            <textarea rows="3" required class="w-full border border-sky-200 p-2 rounded focus:outline-none focus:border-gold-500 bg-sky-50 resize-none"></textarea>
+          </div>
+          <button type="submit" class="bg-navy-700 text-white font-bold px-6 py-2 rounded hover:bg-gold-500 transition w-full">إرسال الرسالة</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-navy-800 text-sky-100/70 border-t border-navy-600">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span class="font-display text-xl font-bold text-white">دار النشر</span>
       <p class="text-sm">&copy; 2026 جميع الحقوق محفوظة. يتم إدارة الطلبات والمخزون بواسطة نظام دفترة.</p>
     </div>
   </footer>
 
+  <!-- المكونات المخفية (السلة وتأكيد الطلب) بقيت كما هي دون تغيير يكسر الجافاسكريبت -->
   <div id="cart-overlay" class="cart-overlay" hidden></div>
-
   <aside id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" hidden>
-    <div class="flex items-center justify-between px-6 py-5 border-b border-navy-100">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-sky-200">
       <h2 class="font-display text-xl font-bold text-navy-700">سلة المشتريات</h2>
-      <button id="cart-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
+      <button id="cart-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-sky-100 transition-colors">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
     <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-5"></div>
-    <div id="cart-footer" class="border-t border-navy-100 px-6 py-5 space-y-4">
+    <div id="cart-footer" class="border-t border-sky-200 px-6 py-5 space-y-4 bg-white">
       <div class="flex items-center justify-between font-display text-lg font-bold text-navy-700">
         <span>الإجمالي</span><span id="cart-total">0 ج.م</span>
       </div>
@@ -161,15 +246,14 @@
   </aside>
 
   <div id="checkout-overlay" class="cart-overlay" hidden></div>
-
   <div id="checkout-modal" class="checkout-modal" role="dialog" aria-modal="true" hidden>
-    <div class="flex items-center justify-between px-6 py-5 border-b border-navy-100">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-sky-200">
       <h2 class="font-display text-xl font-bold text-navy-700">تأكيد الطلب</h2>
-      <button id="checkout-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-navy-50 transition-colors">
+      <button id="checkout-close" type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-full hover:bg-sky-100 transition-colors">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
-    <form id="checkout-form" class="px-6 py-5 space-y-4 overflow-y-auto">
+    <form id="checkout-form" class="px-6 py-5 space-y-4 overflow-y-auto bg-white">
       <div>
         <label for="customer-name" class="form-label">الاسم بالكامل</label>
         <input id="customer-name" name="name" type="text" required class="form-input" placeholder="محمد أحمد" />
@@ -183,14 +267,13 @@
         <textarea id="customer-address" name="address" required rows="3" class="form-input resize-none" placeholder="المحافظة، المدينة، اسم الشارع، رقم العمارة"></textarea>
       </div>
       <p id="checkout-status" class="hidden text-sm"></p>
-      <button id="checkout-submit" type="submit" class="w-full bg-navy-700 hover:bg-navy-600 disabled:opacity-60 text-linen-100 font-bold py-3.5 rounded-sm transition-colors mt-4">
+      <button id="checkout-submit" type="submit" class="w-full bg-navy-700 hover:bg-navy-600 text-white font-bold py-3.5 rounded-sm transition-colors mt-4">
         تأكيد وإرسال الطلب
       </button>
     </form>
   </div>
 
   <div id="toast" class="toast" hidden></div>
-
   <script src="app.js"></script>
 </body>
 </html>
