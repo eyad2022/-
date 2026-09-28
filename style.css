@@ -29,8 +29,25 @@ body { overflow-x: hidden; }
 .animate-blob { animation: blob 7s infinite; }
 .animation-delay-2000 { animation-delay: 2s; }
 
-/* 3D Perspective for the book */
+/* Slider Transitions */
+.hero-slide {
+  display: none;
+  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.hero-slide.active {
+  display: flex;
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .perspective-1000 { perspective: 1000px; }
+
+/* Nav Links & Filters */
+.nav-link { color: var(--navy-800); position: relative; padding-bottom: 2px; transition: color 0.2s; }
+.nav-link:hover { color: var(--orange-500); }
+.active-filter { background: var(--orange-500) !important; color: white !important; }
 
 /* Book Card - Trendy Masonry effect */
 .book-card {
@@ -73,7 +90,7 @@ body { overflow-x: hidden; }
 .qty-stepper button:hover { background: var(--orange-500); color: #fff; }
 .qty-stepper span { min-width: 30px; text-align: center; font-size: 0.95rem; font-weight: 900; color: var(--navy-800); }
 
-/* Toast */
+/* Toast Notification */
 .toast {
   position: fixed; left: 50%; bottom: 40px; transform: translate(-50%, 20px); background: var(--navy-800); color: #ffffff; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 900; z-index: 60; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; box-shadow: 0 10px 30px rgba(8, 15, 31, 0.3); border-bottom: 4px solid var(--orange-500);
 }

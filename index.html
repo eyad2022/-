@@ -4,12 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>دار النشر | متجر الكتب الإلكتروني</title>
+<meta name="description" content="متجر كتب إلكتروني متصل بنظام دفترة" />
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
 
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
@@ -21,7 +23,7 @@
           navy: { 700: '#12213F', 800: '#0C1830', 900: '#080F1F' },
           sky: { 50: '#F0F9FF', 100: '#E0F2FE', 200: '#BAE6FD', 600: '#0284C7' },
           orange: { 400: '#FB923C', 500: '#F97316', 600: '#EA580C' },
-          purple: { 500: '#A855F7' }
+          purple: { 200: '#E9D5FF', 500: '#A855F7' }
         },
         fontFamily: {
           display: ['"Tajawal"', 'sans-serif'],
@@ -64,42 +66,28 @@
     </div>
   </header>
 
-  <!-- القسم العلوي (النمط الأول: تقسيم الشاشة والكتاب الطافي) -->
-  <section class="bg-sky-50 pt-12 pb-24 overflow-hidden relative">
-    <!-- أشكال هندسية زخرفية في الخلفية -->
+  <!-- القسم العلوي (سلايدر ديناميكي مربوط بدفترة) -->
+  <section class="bg-sky-50 pt-12 pb-24 overflow-hidden relative" id="hero-section">
     <div class="absolute top-10 right-10 w-64 h-64 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
     <div class="absolute top-10 left-10 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
 
-    <div class="max-w-6xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center gap-12 relative z-10">
-      <!-- نصف النصوص والبحث -->
-      <div class="flex-1 text-center md:text-right">
-        <span class="inline-block bg-white text-navy-800 border border-sky-200 px-4 py-1.5 rounded-full text-sm font-black mb-6 shadow-sm">اكتشف عوالم جديدة 🚀</span>
-        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] text-navy-900 mb-6">
-          كتابك المفضل<br/><span class="text-sky-600">يطفو بالقرب منك.</span>
-        </h1>
-        <p class="text-lg text-navy-700/80 mb-8 max-w-md mx-auto md:mx-0 font-medium">
-          أحدث إصدارات الخيال، التاريخ، والفلسفة. حصرياً بين يديك بأسعار لا تقبل المنافسة وتجربة شراء لحظية.
-        </p>
-        
-        <!-- شريط البحث السريع -->
-        <div class="relative max-w-md mx-auto md:mx-0 group">
-          <input type="text" id="hero-search" class="w-full bg-white border-2 border-sky-200 rounded-full py-4 px-6 pr-14 text-navy-800 font-bold focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-100 transition-all shadow-sm" placeholder="ابحث عن روايتك القادمة...">
-          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🔍</span>
-        </div>
+    <div class="max-w-6xl mx-auto px-5 md:px-8 relative z-10">
+      <div id="hero-slider-container" class="relative min-h-[450px]">
+          <!-- سيتم حقن الكتب هنا من الجافاسكريبت -->
+          <div class="flex items-center justify-center h-[450px]"><div class="text-orange-500 font-bold text-xl">جاري تحميل أحدث الإصدارات...</div></div>
       </div>
-
-      <!-- نصف الكتاب الطافي -->
-      <div class="flex-1 relative flex justify-center mt-10 md:mt-0">
-        <div class="relative w-[280px] h-[400px] animate-float perspective-1000">
-          <img src="https://placehold.co/400x600/0284C7/FFFFFF?text=New+Release" class="w-full h-full object-cover rounded-r-3xl rounded-l-md shadow-[20px_20px_40px_rgba(0,0,0,0.2)] transform rotate-[-5deg] rotate-y-12 border-l-8 border-sky-200" alt="كتاب طافي">
-        </div>
+      
+      <div class="flex justify-center gap-4 mt-8 relative z-20">
+        <button id="slider-prev" class="w-12 h-12 rounded-full bg-white border-2 border-sky-200 text-navy-800 flex items-center justify-center hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all font-bold text-2xl shadow-sm leading-none">&rarr;</button>
+        <button id="slider-next" class="w-12 h-12 rounded-full bg-white border-2 border-sky-200 text-navy-800 flex items-center justify-center hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all font-bold text-2xl shadow-sm leading-none">&larr;</button>
       </div>
     </div>
   </section>
 
-  <!-- تصنيفات شبابية (Pills) -->
+  <!-- تصنيفات شبابية -->
   <section class="max-w-6xl mx-auto px-5 md:px-8 -mt-8 relative z-20">
     <div class="bg-white p-4 rounded-full shadow-lg border border-sky-100 flex items-center justify-center gap-3 md:gap-6 flex-wrap">
+      <button class="filter-btn font-bold px-6 py-2 rounded-full hover:bg-sky-100 text-navy-800 transition active-filter" data-category="الكل">⭐ الكل</button>
       <button class="filter-btn font-bold px-6 py-2 rounded-full hover:bg-sky-100 text-navy-800 transition" data-category="روايات">📚 روايات</button>
       <button class="filter-btn font-bold px-6 py-2 rounded-full hover:bg-sky-100 text-navy-800 transition" data-category="تاريخ">📜 تاريخ</button>
       <button class="filter-btn font-bold px-6 py-2 rounded-full hover:bg-sky-100 text-navy-800 transition" data-category="فلسفة">🧠 فلسفة</button>
@@ -107,12 +95,12 @@
     </div>
   </section>
 
-  <!-- شبكة الكتب (النمط الثالث: متباينة وديناميكية) -->
+  <!-- شبكة الكتب -->
   <main>
     <section id="latest-releases" class="max-w-6xl mx-auto px-5 md:px-8 py-20">
       <div class="flex items-end justify-between mb-12">
         <h2 class="font-display text-4xl font-black text-navy-800 relative inline-block">
-          أحدث الإصدارات
+          تصفح المتجر
           <span class="absolute -bottom-2 right-0 w-1/2 h-2 bg-orange-400 rounded-full"></span>
         </h2>
       </div>
@@ -121,7 +109,6 @@
         <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
       </div>
       
-      <!-- سيتم حقن البطاقات هنا مع إضافة فجوات رأسية متباينة -->
       <div id="products-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-start pb-10"></div>
     </section>
   </main>
@@ -132,7 +119,7 @@
       <span class="text-orange-500 font-bold text-lg mb-2 block">قصتنا</span>
       <h2 class="font-display text-4xl font-black text-navy-800 mb-6">دار النشر المستقلة</h2>
       <p class="text-xl text-navy-700/80 leading-relaxed font-medium">
-        نؤمن بأن الكتاب هو الجسر الذي يربط بين الثقافات، ونسعى دائماً لدعم المواهب الشابة وتوفير تجربة قراءة استثنائية من خلال انتقاء أفضل العناوين وتوفيرها بأسعار في متناول الجميع.
+        نؤمن بأن الكتاب هو الجسر الذي يربط بين الثقافات، ونسعى دائماً لدعم المواهب الشابة وتوفير تجربة قراءة استثنائية من خلال انتقاء أفضل العناوين وتوفيرها بأسعار في متناول الجميع، مع ضمان جودة الطباعة وسرعة التوصيل.
       </p>
     </div>
   </section>
@@ -156,13 +143,19 @@
           </summary>
           <p class="text-navy-700 font-medium mt-4 pt-4 border-t border-sky-100">نعم، يمكنك استرجاع أو استبدال الكتاب خلال 14 يوماً من الاستلام بشرط أن يكون بحالته الأصلية.</p>
         </details>
+        <details class="bg-white p-5 rounded-2xl shadow-sm border-2 border-transparent hover:border-sky-200 group cursor-pointer transition-all">
+          <summary class="font-black text-navy-800 text-xl outline-none flex justify-between items-center">
+            ما هي طرق الدفع المتاحة؟
+            <span class="bg-sky-100 text-sky-600 w-8 h-8 rounded-full flex items-center justify-center group-open:rotate-45 transition-transform text-2xl leading-none">+</span>
+          </summary>
+          <p class="text-navy-700 font-medium mt-4 pt-4 border-t border-sky-100">نوفر حالياً خدمة الدفع نقداً عند الاستلام (Cash on Delivery) لضمان راحة عملائنا وثقتهم.</p>
+        </details>
       </div>
     </div>
   </section>
 
-  <!-- حل المشكلات والدعم -->
+  <!-- حل المشكلات -->
   <section id="help" class="bg-navy-900 py-20 relative overflow-hidden">
-    <div class="absolute inset-0 hero-rule-pattern opacity-10"></div>
     <div class="max-w-6xl mx-auto px-5 md:px-8 relative z-10">
       <h2 class="font-display text-4xl font-black text-white mb-12 text-center">واجهتك مشكلة؟</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -173,13 +166,13 @@
         </div>
         <div class="bg-navy-800/80 backdrop-blur border border-navy-700 p-8 rounded-3xl hover:-translate-y-2 transition-transform">
           <div class="text-4xl mb-4">📦</div>
-          <h3 class="font-black text-purple-400 text-2xl mb-3">كتاب تالف</h3>
-          <p class="text-sky-100/80 font-medium">صور الكتاب وأرسله لنا وسنقوم بإرسال نسخة جديدة مجاناً.</p>
+          <h3 class="font-black text-purple-400 text-2xl mb-3">كتاب تالف أو خاطئ</h3>
+          <p class="text-sky-100/80 font-medium">صور الكتاب وأرسله لنا وسنقوم بإرسال نسخة جديدة مجاناً واستلام الخاطئة.</p>
         </div>
         <div class="bg-navy-800/80 backdrop-blur border border-navy-700 p-8 rounded-3xl hover:-translate-y-2 transition-transform">
           <div class="text-4xl mb-4">✍️</div>
-          <h3 class="font-black text-sky-400 text-2xl mb-3">تعديل بيانات</h3>
-          <p class="text-sky-100/80 font-medium">تواصل معنا هاتفياً خلال 12 ساعة من تسجيل الطلب لتعديل العنوان.</p>
+          <h3 class="font-black text-sky-400 text-2xl mb-3">تعديل بيانات الشحن</h3>
+          <p class="text-sky-100/80 font-medium">تواصل معنا هاتفياً خلال 12 ساعة من تسجيل الطلب لتعديل العنوان أو الهاتف.</p>
         </div>
       </div>
     </div>
@@ -188,7 +181,7 @@
   <!-- تواصل معنا -->
   <section id="contact" class="py-20 bg-white">
     <div class="max-w-4xl mx-auto px-5 md:px-8">
-      <div class="bg-sky-50 p-8 md:p-12 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="bg-sky-50 p-8 md:p-12 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center border border-sky-100">
         <div>
           <h2 class="font-display text-4xl font-black text-navy-800 mb-6">ابقى على تواصل</h2>
           <ul class="space-y-6 text-navy-800 font-bold text-lg">
@@ -197,17 +190,21 @@
             <li class="flex items-center gap-4"><span class="bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-sm text-2xl">✉️</span> info@dar-alnasher.com</li>
           </ul>
         </div>
-        <form onsubmit="event.preventDefault(); alert('تم الإرسال!');" class="space-y-4 bg-white p-6 rounded-2xl shadow-sm border border-sky-100">
-          <input type="text" required placeholder="الاسم بالكامل" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold">
-          <input type="text" required placeholder="رقم الهاتف" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold">
-          <textarea rows="3" required placeholder="رسالتك..." class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none font-bold"></textarea>
+        <form onsubmit="event.preventDefault(); alert('تم الإرسال بنجاح!');" class="space-y-4 bg-white p-6 rounded-2xl shadow-sm border border-sky-100">
+          <input type="text" required placeholder="الاسم بالكامل" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold text-navy-800">
+          <input type="text" required placeholder="رقم الهاتف أو الإيميل" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold text-navy-800">
+          <textarea rows="3" required placeholder="رسالتك..." class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none font-bold text-navy-800"></textarea>
           <button type="submit" class="bg-orange-500 text-white font-black text-lg px-6 py-4 rounded-xl hover:bg-orange-600 transition w-full shadow-lg shadow-orange-500/30">إرسال الرسالة</button>
         </form>
       </div>
     </div>
   </section>
 
-  <!-- المكونات المخفية (السلة وتأكيد الطلب) -->
+  <footer class="bg-navy-900 text-sky-100/70 border-t border-navy-700 text-center py-8">
+    <p class="text-sm font-bold">&copy; 2026 جميع الحقوق محفوظة لدار النشر. يتم إدارة المتجر بواسطة نظام دفترة.</p>
+  </footer>
+
+  <!-- السلة (Cart Panel) -->
   <div id="cart-overlay" class="cart-overlay" hidden></div>
   <aside id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" hidden>
     <div class="flex items-center justify-between px-6 py-6 border-b border-sky-100">
@@ -225,6 +222,7 @@
     </div>
   </aside>
 
+  <!-- تأكيد الطلب (Checkout Modal) -->
   <div id="checkout-overlay" class="cart-overlay" hidden></div>
   <div id="checkout-modal" class="checkout-modal" role="dialog" aria-modal="true" hidden>
     <div class="flex items-center justify-between px-6 py-6 border-b border-sky-100">
@@ -232,13 +230,22 @@
       <button id="checkout-close" type="button" class="bg-sky-100 text-navy-800 w-10 h-10 rounded-full font-bold hover:bg-orange-500 hover:text-white transition-colors text-xl leading-none">&times;</button>
     </div>
     <form id="checkout-form" class="px-6 py-6 space-y-5 overflow-y-auto bg-white">
-      <input id="customer-name" name="name" type="text" required placeholder="الاسم بالكامل" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold" />
-      <input id="customer-phone" name="phone" type="tel" required placeholder="رقم الهاتف" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold" />
-      <textarea id="customer-address" name="address" required rows="3" placeholder="المحافظة، المدينة، الشارع" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none font-bold"></textarea>
+      <div>
+        <label class="block text-sm font-bold text-navy-700 mb-1">الاسم بالكامل</label>
+        <input id="customer-name" name="name" type="text" required placeholder="محمد أحمد" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold text-navy-800" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-navy-700 mb-1">رقم الهاتف</label>
+        <input id="customer-phone" name="phone" type="tel" required placeholder="010XXXXXXXX" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 font-bold text-navy-800" />
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-navy-700 mb-1">عنوان التوصيل بالتفصيل</label>
+        <textarea id="customer-address" name="address" required rows="3" placeholder="المحافظة، المدينة، اسم الشارع، رقم العمارة" class="w-full bg-sky-50 border-none p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none font-bold text-navy-800"></textarea>
+      </div>
       
-      <p id="checkout-status" class="hidden text-sm"></p>
+      <p id="checkout-status" class="hidden text-sm font-bold"></p>
       <button id="checkout-submit" type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black text-lg py-4 rounded-xl transition-colors mt-2 shadow-lg shadow-orange-500/30">
-        تأكيد الطلب
+        تأكيد وإرسال الطلب
       </button>
     </form>
   </div>
